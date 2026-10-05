@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCX Algo Pro - Luxury Edition</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    
+    <style>
+        :root {
+            --gold-light: #FDE047;
+            --gold-main: #EAB308;
+            --gold-dark: #A16207;
+            --silver-main: #cbd5e1;
+            --copper-main: #d97706;
+            
+            --bg-deep: #020617;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --input-bg: rgba(30, 41, 59, 0.8);
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(234, 179, 8, 0.15); 
+        }
+
+        body { 
+            background-color: var(--bg-deep); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-main);
+            padding-bottom: 50px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            animation: float 12s infinite ease-in-out alternate;
+        }
+        .shape-gold { width: 450px; height: 450px; background: rgba(234, 179, 8, 0.12); top: -5%; left: -10%; }
+        .shape-silver { width: 550px; height: 550px; background: rgba(203, 213, 225, 0.08); bottom: 5%; right: -10%; animation-delay: -4s; }
+        .shape-copper { width: 350px; height: 350px; background: rgba(217, 119, 6, 0.1); top: 50%; left: 40%; animation-duration: 18s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 60px) scale(1.15); }
+        }
+
+        .navbar-custom {
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+            padding: 24px 30px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .text-gold-gradient {
+            background: linear-gradient(to right, var(--gold-light), var(--gold-main));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-silver-gradient {
+            background: linear-gradient(to right, #ffffff, var(--silver-main));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-badge {
+            background: rgba(234, 179, 8, 0.1);
+            color: var(--gold-light);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.05);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--silver-main);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--input-bg);
+            font-weight: 500;
+            color: #fff;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--gold-main);
+            background-color: rgba(30, 41, 59, 0.95);
+            color: #fff;
+            box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.15);
+        }
+        .input-group-text {
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: none;
+            color: var(--gold-main);
+        }
+
+        .calendar-input { cursor: pointer !important; text-transform: uppercase !important; }
+
+        .btn-outline-gold {
+            border: 1px solid rgba(234, 179, 8, 0.4);
+            color: var(--gold-light);
+            background: rgba(15, 23, 42, 0.6);
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-check:checked + .btn-outline-gold {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-main) 100%) !important;
+            color: #000 !important;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+            border-color: var(--gold-main);
+        }
+        .btn-outline-gold:hover {
+            background: rgba(234, 179, 8, 0.15);
+            color: #fff;
+        }
+
+        .btn-gold-custom {
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-main) 50%, var(--gold-dark) 100%);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 28px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(234, 179, 8, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gold-custom:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 25px -5px rgba(234, 179, 8, 0.6);
+            color: #000;
+        }
+        
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+        .btn-pulse { animation: pulse-gold 2.5s infinite; }
+
+        .ratio-row {
+            background-color: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); margin: 40px 0; }
+        
+        .smart-tag {
+            font-size: 0.65rem;
+            background: rgba(234, 179, 8, 0.15);
+            color: var(--gold-light);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+            font-weight: 700;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .text-danger-custom { color: #f87171 !important; }
+        .text-success-custom { color: #4ade80 !important; }
+        option { background-color: #0f172a; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="bg-shape shape-gold"></div>
+<div class="bg-shape shape-silver"></div>
+<div class="bg-shape shape-copper"></div>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-5">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <div class="rounded p-2 me-2 d-flex align-items-center justify-content-center shadow" style="width: 38px; height: 38px; background: linear-gradient(135deg, #EAB308, #A16207);">
+                <i class="bi bi-graph-up-arrow fs-5 text-dark"></i>
+            </div>
+            <span class="text-silver-gradient">MCX Algo</span><span class="fw-light ms-1 text-gold-gradient">Pro</span>
+        </a>
+        <div class="d-flex text-white align-items-center">
+            <div class="d-flex align-items-center me-4 bg-dark bg-opacity-50 px-3 py-2 rounded-pill border border-warning border-opacity-25">
+                <i class="bi bi-person-circle text-warning me-2 fs-5"></i>
+                <span class="small fw-medium">{{ username }}</span>
+            </div>
+            <form action="/logout" method="POST" class="m-0">
+                <button type="submit" class="btn btn-sm rounded-pill px-4 py-2 fw-bold" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                    Logout <i class="bi bi-box-arrow-right ms-1"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            
+            <div id="mixedModeAlert" class="alert border-0 shadow-sm rounded-4 mb-4 d-none" style="background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3) !important;">
+                <div class="d-flex align-items-center p-2">
+                    <div class="rounded-circle p-2 shadow-sm me-3" style="background: rgba(234, 179, 8, 0.2);">
+                        <i class="bi bi-lightning-charge-fill fs-4 text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 fw-bold text-gold-gradient">Mixed Strategy Enabled (Future + Options)</h6>
+                        <p class="mb-0 small fw-medium" style="color: #cbd5e1;">Leg 1: <strong>FUTSTK</strong> (Strike 0, Type '-'). Leg 2+: <strong>OPTSTK</strong>. Ticksize is automatically doubled.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card mb-5">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold d-flex align-items-center text-silver-gradient">
+                        <i class="bi bi-bar-chart-line-fill me-3" style="color: var(--gold-main);"></i> Trading Terminal
+                    </h4>
+                    <span class="badge px-3 py-2 rounded-pill fw-bold" style="background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3);">
+                        <i class="bi bi-check-circle-fill me-1"></i> System Online
+                    </span>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <form action="/mcx_generate" method="POST" id="mcxForm">
+                        
+                        <div class="section-badge"><i class="bi bi-1-circle-fill me-1"></i> Commodity Engine</div>
+                        
+                        <div class="row mb-4 align-items-end">
+                            <div class="col-md-12 mb-4">
+                                <label class="form-label" style="color: var(--gold-main);">Strategy Execution Type</label>
+                                <select name="strategy_type" id="strategyType" class="form-select form-select-lg shadow-sm fw-bold" style="border-color: var(--gold-main);" onchange="toggleStrategyMode()">
+                                    <option value="options_only">Standard Options Only (All Legs = OPTSTK)</option>
+                                    <option value="mixed">Mixed Future + Options (Leg 1 = FUTSTK, Leg 2+ = OPTSTK)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label class="form-label">Commodity Asset</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-gem"></i></span>
+                                    <select name="commodity" id="commoditySelect" class="form-select border-start-0" onchange="updateCommodityDefaults()">
+                                        <option value="CRUDEOIL">Crude Oil (Petro)</option>
+                                        <option value="CRUDEOILM">Crude Oil Mini</option>
+                                        <option value="NATURALGAS">Natural Gas</option>
+                                        <option value="NATGASMINI">Natural Gas Mini</option>
+                                        <option value="GOLD">Gold (Aurum)</option>
+                                        <option value="GOLDMINI">Gold Mini</option>
+                                        <option value="SILVER">Silver (Argentum)</option>
+                                        <option value="SILVERMINI">Silver Mini</option>
+                                        <option value="COPPER">Copper</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label class="form-label">Order Mode</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-cpu"></i></span>
+                                    <select name="mode" class="form-select border-start-0">
+                                        <option value="8184">Normal (8184)</option>
+                                        <option value="7155">Advanced (7155)</option>
+                                        <option value="IOC">Immediate or Cancel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Buy/Sell Pattern <span class="text-danger-custom">*</span></label>
+                                <input type="text" name="buySellPattern" class="form-control fw-bold text-center fs-5 shadow-sm text-gold-gradient" value="S.B.S" oninput="this.value = this.value.toUpperCase()" style="letter-spacing: 2px;" required>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <div class="section-badge"><i class="bi bi-2-circle-fill me-1"></i> Expiry Control Radar</div>
+                        <div class="row mb-4 highlight-box" id="expiryContainer">
+                            
+                            <div class="col-12 mb-4">
+                                <label class="form-label text-warning">Quick Select Expiry Cycle</label>
+                                <div class="btn-group w-100 shadow-sm" role="group">
+                                    <input type="radio" class="btn-check" name="expiry_cycle_mode" id="cycleCurrent" value="current" checked onchange="handleCycleChange()">
+                                    <label class="btn btn-outline-gold py-2 small fw-bold" for="cycleCurrent" id="lblCurrent">Current Contract</label>
+
+                                    <input type="radio" class="btn-check" name="expiry_cycle_mode" id="cycleNext" value="next" onchange="handleCycleChange()">
+                                    <label class="btn btn-outline-gold py-2 small fw-bold" for="cycleNext" id="lblNext">Next Contract</label>
+
+                                    <input type="radio" class="btn-check" name="expiry_cycle_mode" id="cycleFar" value="far" onchange="handleCycleChange()">
+                                    <label class="btn btn-outline-gold py-2 small fw-bold" for="cycleFar" id="lblFar">Far Contract</label>
+
+                                    <input type="radio" class="btn-check" name="expiry_cycle_mode" id="cycleCustom" value="custom" onchange="handleCycleChange()">
+                                    <label class="btn btn-outline-gold py-2 small fw-bold" for="cycleCustom"><i class="bi bi-calendar3 me-1"></i> Custom Calendar</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 d-none mb-3 mb-md-0" id="futureExpiryDiv">
+                                <label class="form-label text-danger-custom">Futures Expiry <span class="badge ms-1" style="background: rgba(248, 113, 113, 0.2); color: #f87171;">Leg 1</span></label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text text-danger-custom" style="border-color: rgba(248, 113, 113, 0.3);"><i class="bi bi-calendar-check-fill"></i></span>
+                                    <input type="text" name="futures_expiry" id="futExpiry" class="form-control calendar-input border-start-0 ps-0 fw-bold" style="color: #f87171; border-color: rgba(248, 113, 113, 0.3);" placeholder="Select Date" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12" id="optionExpiryDiv">
+                                <label class="form-label" style="color: var(--gold-light);" id="optionExpiryLabel">Options Expiry</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text" style="color: var(--gold-light); border-color: rgba(234, 179, 8, 0.3);"><i class="bi bi-calendar-event-fill"></i></span>
+                                    <input type="text" name="option_expiry" id="optExpiry" class="form-control calendar-input border-start-0 ps-0 fw-bold" style="color: var(--gold-light); border-color: rgba(234, 179, 8, 0.3);" placeholder="Select Date" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <div class="section-badge"><i class="bi bi-3-circle-fill me-1"></i> Pricing Matrix</div>
+                        <div class="row mb-4 align-items-end g-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Base CE <span class="smart-tag">Auto</span></label>
+                                <input type="number" name="firstStrikeCE" id="strikeCE" class="form-control fw-bold text-center shadow-sm text-success-custom" style="border-color: rgba(74, 222, 128, 0.3);" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Base PE <span class="smart-tag">Auto</span></label>
+                                <input type="number" name="firstStrikePE" id="strikePE" class="form-control fw-bold text-center shadow-sm text-danger-custom" style="border-color: rgba(248, 113, 113, 0.3);" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Strike Step <span class="smart-tag">Auto</span></label>
+                                <input type="number" name="strikeStep" id="strikeStep" class="form-control fw-bold text-center shadow-sm text-white" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" style="color: var(--gold-main);">Strike Flow</label>
+                                <select name="strike_direction" id="strikeDirection" class="form-select fw-bold text-warning" style="border-color: rgba(234, 179, 8, 0.3);">
+                                    <option value="normal">Normal (OTM)</option>
+                                    <option value="reverse">Reverse (ITM)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input fs-5" type="checkbox" name="sync_strikes" checked id="syncStrikesToggle" onchange="toggleStrikesLayout()">
+                                    <label class="form-check-label small fw-bold mt-1 text-gold-gradient" for="syncStrikesToggle">Same Count</label>
+                                </div>
+                                <div id="masterStrikesDiv">
+                                    <div class="input-group shadow-sm">
+                                        <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                        <input type="number" name="totStrikesMaster" id="totStrikesMaster" class="form-control text-center fw-bold text-white" value="10" min="1">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2 d-none" id="ceStrikesDiv">
+                                <label class="form-label text-success-custom">Call Strikes</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text border-success border-opacity-25" style="color: #4ade80;"><i class="bi bi-arrow-up-circle-fill"></i></span>
+                                    <input type="number" name="totStrikesCE" id="totStrikesCE" class="form-control text-center fw-bold text-white border-success border-opacity-25" value="10" min="1">
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-none" id="peStrikesDiv">
+                                <label class="form-label text-danger-custom">Put Strikes</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text border-danger border-opacity-25" style="color: #f87171;"><i class="bi bi-arrow-down-circle-fill"></i></span>
+                                    <input type="number" name="totStrikesPE" id="totStrikesPE" class="form-control text-center fw-bold text-white border-danger border-opacity-25" value="10" min="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <div class="section-badge"><i class="bi bi-4-circle-fill me-1"></i> Leg Configuration</div>
+                        <div class="mb-4">
+                            <div class="row mb-2 px-3 d-none d-md-flex small fw-bold text-uppercase" style="color: var(--silver-main);">
+                                <div class="col-md-4" id="ratioLabel">Ratio Pattern</div>
+                                <div class="col-md-5">Options Gap Separation</div>
+                                <div class="col-md-3 text-end pe-4">Controls</div>
+                            </div>
+                            
+                            <div id="ratios-container">
+                                <div class="row align-items-center ratio-row p-3 rounded-4 shadow-sm mb-3 position-relative">
+                                    <div class="col-md-4 mb-3 mb-md-0">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
+                                            <input type="text" name="ratios" class="form-control fw-bold fs-5 border-start-0 text-white" placeholder="e.g. 1.2.1 or 1/2" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 mb-3 mb-md-0">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-arrows-expand"></i></span>
+                                            <input type="text" name="gaps" class="form-control fw-bold fs-5 border-start-0 text-white" placeholder="e.g. 100,200" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-center justify-content-between px-md-4">
+                                        <div class="form-check form-switch me-2">
+                                            <input class="form-check-input fs-4" type="checkbox" name="use_individual_gaps" checked id="indGap1">
+                                            <label class="form-check-label small fw-bold mt-1 ms-1 text-silver-gradient" for="indGap1">Ind. Gaps</label>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-link text-muted opacity-50" disabled>
+                                            <i class="bi bi-trash3-fill fs-5"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-gold w-100 py-3 mt-2 rounded-4" onclick="addRatioRow()">
+                                <i class="bi bi-plus-lg me-2 fs-5 align-middle"></i> Add Another Leg Ratio
+                            </button>
+                        </div>
+
+                        <div class="accordion mb-5 border-0 mt-4" id="advancedAccordion">
+                            <div class="accordion-item rounded-4 overflow-hidden shadow-sm" style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.05);">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed fw-medium text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" style="background: transparent; box-shadow: none;">
+                                        <i class="bi bi-gear-wide-connected me-2" style="color: var(--gold-main);"></i> Advanced Variables (Dev Override)
+                                    </button>
+                                </h2>
+                                <div id="collapseAdvanced" class="accordion-collapse collapse" data-bs-parent="#advancedAccordion">
+                                    <div class="accordion-body p-4 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+                                        <div class="form-check form-switch mb-4">
+                                            <input class="form-check-input" type="checkbox" name="use_advanced_csv" id="use_advanced_csv">
+                                            <label class="form-check-label fw-bold ms-2" style="color: var(--gold-light);" for="use_advanced_csv">Enable Override Mode</label>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">BSOQ</label><input type="text" name="bsoq" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">BQTY</label><input type="text" name="bqty" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">BPRICE</label><input type="text" name="bprice" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">SPRICE</label><input type="text" name="sprice" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">SQTY</label><input type="text" name="sqty" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                            <div class="col-md-2"><label class="small mb-1" style="color: var(--silver-main);">SSOQ</label><input type="text" name="ssoq" class="form-control form-control-sm text-center" placeholder="0"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-4 border d-flex flex-column flex-md-row align-items-center justify-content-between mt-5 shadow-lg" style="background: rgba(0, 0, 0, 0.2); border-color: rgba(234, 179, 8, 0.2) !important;">
+                            <div class="flex-grow-1 me-md-4 w-100 mb-4 mb-md-0">
+                                <label class="form-label mb-2 fw-bold" style="color: var(--silver-main);">Export Strategy File Name (Optional)</label>
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text border-end-0" style="background: rgba(30, 41, 59, 0.8);"><i class="bi bi-file-earmark-code-fill" style="color: var(--gold-main);"></i></span>
+                                    <input type="text" name="fileName" class="form-control border-start-0 ps-0 fw-bold text-white" placeholder="Auto_Generated_Name">
+                                    <span class="input-group-text fw-bold" style="background: rgba(30, 41, 59, 0.8); color: var(--silver-main);">.csv</span>
+                                </div>
+                            </div>
+                            <div class="w-100 mt-2 mt-md-0" style="max-width: 320px;">
+                                <label class="form-label d-none d-md-block">&nbsp;</label>
+                                <button type="submit" id="submitBtn" class="btn btn-gold-custom btn-pulse w-100 h-100 py-3">
+                                    <i class="bi bi-rocket-takeoff-fill me-2 fs-4 align-middle"></i> Download CSV
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    const commonDateConfig = {
+        dateFormat: "d-M-Y",
+        allowInput: true
+    };
+
+    const futPicker = flatpickr("#futExpiry", commonDateConfig);
+    const optPicker = flatpickr("#optExpiry", commonDateConfig);
+
+    function getDynamicExpiry(targetDay, monthOffset) {
+        const now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth() + monthOffset; 
+
+        while (month > 11) {
+            month -= 12;
+            year += 1;
+        }
+
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const dayStr = String(targetDay).padStart(2, '0');
+        return `${dayStr}-${monthNames[month]}-${year}`;
+    }
+
+    function updateExpiryTabLabels() {
+        const comm = document.getElementById('commoditySelect').value;
+        const now = new Date();
+        const currentDay = now.getDate();
+
+        let baseOptOffset = 0;
+        let cOptDay = 17;
+
+        if (comm === 'CRUDEOIL' || comm === 'CRUDEOILM') {
+            baseOptOffset = currentDay > 17 ? 1 : 0;
+            cOptDay = 17;
+        } else if (comm === 'NATURALGAS' || comm === 'NATGASMINI') {
+            baseOptOffset = currentDay > 24 ? 1 : 0;
+            cOptDay = 24;
+        } else if (comm === 'GOLD' || comm === 'GOLDMINI') {
+            baseOptOffset = currentDay > 24 ? 1 : 0;
+            cOptDay = 24;
+        } else if (comm === 'SILVER' || comm === 'SILVERMINI') {
+            baseOptOffset = currentDay > 26 ? 1 : 0;
+            cOptDay = 26;
+        } else if (comm === 'COPPER') {
+            baseOptOffset = currentDay > 23 ? 1 : 0;
+            cOptDay = 23;
+        }
+
+        const curOpt = getDynamicExpiry(cOptDay, baseOptOffset).toUpperCase();
+        const nxtOpt = getDynamicExpiry(cOptDay, baseOptOffset + 1).toUpperCase();
+        const farOpt = getDynamicExpiry(cOptDay, baseOptOffset + 2).toUpperCase();
+
+        document.getElementById('lblCurrent').innerText = "Current (" + curOpt.split('-')[1] + ")";
+        document.getElementById('lblNext').innerText = "Next (" + nxtOpt.split('-')[1] + ")";
+        document.getElementById('lblFar').innerText = "Far (" + farOpt.split('-')[1] + ")";
+    }
+
+    function updateCommodityDefaults() {
+        const comm = document.getElementById('commoditySelect').value;
+        updateExpiryTabLabels(); 
+
+        const strikeConfig = {
+            'CRUDEOIL': { ce: 9500, pe: 8000, step: 500 },
+            'CRUDEOILM': { ce: 9500, pe: 8000, step: 100 },
+            'NATURALGAS': { ce: 290, pe: 290, step: 20 },
+            'NATGASMINI': { ce: 290, pe: 290, step: 10 },
+            'GOLD': { ce: 158000, pe: 158000, step: 1000 },
+            'GOLDMINI': { ce: 70000, pe: 70000, step: 100 },
+            'SILVER': { ce: 270000, pe: 270000, step: 1000 },
+            'SILVERMINI': { ce: 90000, pe: 90000, step: 500 },
+            'COPPER': { ce: 1200, pe: 1200, step: 50 }
+        };
+
+        const s = strikeConfig[comm];
+        document.getElementById('strikeCE').value = s.ce;
+        document.getElementById('strikePE').value = s.pe;
+        document.getElementById('strikeStep').value = s.step;
+
+        handleCycleChange(); 
+    }
+
+    function handleCycleChange() {
+        const comm = document.getElementById('commoditySelect').value;
+        const cycleMode = document.querySelector('input[name="expiry_cycle_mode"]:checked').value;
+        const now = new Date();
+        const currentDay = now.getDate();
+
+        let optDate, futDate;
+        let monthOffset = 0;
+
+        if (cycleMode === 'custom') {
+            document.getElementById('optExpiry').readOnly = false;
+            document.getElementById('futExpiry').readOnly = false;
+            return;
+        }
+
+        document.getElementById('optExpiry').readOnly = true;
+        document.getElementById('futExpiry').readOnly = true;
+
+        if (cycleMode === 'current') monthOffset = 0;
+        if (cycleMode === 'next') monthOffset = 1;
+        if (cycleMode === 'far') monthOffset = 2;
+
+        if (comm === 'CRUDEOIL' || comm === 'CRUDEOILM') {
+            let optOffset = (currentDay > 17 ? 1 : 0) + monthOffset;
+            let futOffset = (currentDay > 19 ? 1 : 0) + monthOffset;
+            optDate = getDynamicExpiry(17, optOffset);
+            futDate = getDynamicExpiry(19, futOffset);
+        } else if (comm === 'NATURALGAS' || comm === 'NATGASMINI') {
+            let optOffset = (currentDay > 24 ? 1 : 0) + monthOffset;
+            let futOffset = (currentDay > 26 ? 1 : 0) + monthOffset;
+            optDate = getDynamicExpiry(24, optOffset);
+            futDate = getDynamicExpiry(26, futOffset);
+        } else if (comm === 'GOLD' || comm === 'GOLDMINI') {
+            let optOffset = (currentDay > 24 ? 1 : 0) + monthOffset;
+            optDate = getDynamicExpiry(24, optOffset);
+            futDate = getDynamicExpiry(2, optOffset + 1); 
+        } else if (comm === 'SILVER' || comm === 'SILVERMINI') {
+            let optOffset = (currentDay > 26 ? 1 : 0) + monthOffset;
+            optDate = getDynamicExpiry(26, optOffset);
+            futDate = getDynamicExpiry(5, optOffset + 1); 
+        } else if (comm === 'COPPER') {
+            let optOffset = (currentDay > 23 ? 1 : 0) + monthOffset;
+            let futOffset = (currentDay > 30 ? 1 : 0) + monthOffset;
+            optDate = getDynamicExpiry(23, optOffset);
+            futDate = getDynamicExpiry(30, futOffset);
+        }
+
+        optPicker.setDate(optDate);
+        futPicker.setDate(futDate);
+    }
+
+    function toggleStrikesLayout() {
+        const isSynced = document.getElementById('syncStrikesToggle').checked;
+        const masterDiv = document.getElementById('masterStrikesDiv');
+        const ceDiv = document.getElementById('ceStrikesDiv');
+        const peDiv = document.getElementById('peStrikesDiv');
+
+        if (isSynced) {
+            masterDiv.classList.remove('d-none');
+            ceDiv.classList.add('d-none');
+            peDiv.classList.add('d-none');
+        } else {
+            masterDiv.classList.add('d-none');
+            ceDiv.classList.remove('d-none');
+            peDiv.classList.remove('d-none');
+            
+            document.getElementById('totStrikesCE').value = document.getElementById('totStrikesMaster').value;
+            document.getElementById('totStrikesPE').value = document.getElementById('totStrikesMaster').value;
+        }
+    }
+
+    function toggleStrategyMode() {
+        const type = document.getElementById('strategyType').value;
+        const futDiv = document.getElementById('futureExpiryDiv');
+        const optDiv = document.getElementById('optionExpiryDiv');
+        const alertBox = document.getElementById('mixedModeAlert');
+        
+        if (type === 'mixed') {
+            futDiv.classList.remove('d-none');
+            optDiv.className = 'col-md-6';
+            document.getElementById('optionExpiryLabel').innerHTML = 'Options Expiry <span class="badge ms-1" style="background: rgba(234, 179, 8, 0.2); color: var(--gold-light);">Leg 2+</span>';
+            document.getElementById('ratioLabel').innerText = 'Ratio Pattern (e.g. 1.2.1 or 1/2)';
+            alertBox.classList.remove('d-none');
+        } else {
+            futDiv.classList.add('d-none');
+            optDiv.className = 'col-md-12';
+            document.getElementById('optionExpiryLabel').innerHTML = 'Options Expiry <span class="badge ms-1" style="background: rgba(255, 255, 255, 0.1); color: var(--silver-main);">All Legs</span>';
+            document.getElementById('ratioLabel').innerText = 'Ratio Pattern (e.g. 1.2.1 or 1/2)';
+            alertBox.classList.add('d-none');
+        }
+    }
+
+    updateCommodityDefaults();
+    toggleStrategyMode();
+
+    let gapCounter = 2;
+
+    function addRatioRow() {
+        const container = document.getElementById('ratios-container');
+        const row = document.createElement('div');
+        row.className = 'row align-items-center ratio-row p-3 rounded-4 shadow-sm mb-3 position-relative';
+        
+        const type = document.getElementById('strategyType').value;
+        const ratioPlaceholder = type === 'mixed' ? 'e.g. 1.2.1 or 1/2' : 'e.g. 1.2.1 or 1/2';
+
+        row.innerHTML = `
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
+                    <input type="text" name="ratios" class="form-control fw-bold fs-5 border-start-0 text-white" placeholder="${ratioPlaceholder}" required>
+                </div>
+            </div>
+            <div class="col-md-5 mb-3 mb-md-0">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-arrows-expand"></i></span>
+                    <input type="text" name="gaps" class="form-control fw-bold fs-5 border-start-0 text-white" placeholder="e.g. 100,200" required>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-center justify-content-between px-md-4">
+                <div class="form-check form-switch me-2">
+                    <input class="form-check-input fs-4" type="checkbox" name="use_individual_gaps" checked id="indGap${gapCounter}">
+                    <label class="form-check-label small fw-bold mt-1 ms-1 text-silver-gradient" for="indGap${gapCounter}">Ind. Gaps</label>
+                </div>
+                <button type="button" class="btn btn-sm btn-link text-danger-custom" onclick="this.closest('.ratio-row').remove()" style="text-decoration: none;">
+                    <i class="bi bi-trash3-fill fs-5"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+        gapCounter++;
+    }
+</script>
+</body>
+</html>
